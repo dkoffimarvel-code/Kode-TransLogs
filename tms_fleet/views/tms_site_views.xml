@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_tms_site_list" model="ir.ui.view">
+        <field name="name">tms.site.list</field>
+        <field name="model">tms.site</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="name"/>
+                <field name="address"/>
+                <field name="cost_center_id"/>
+                <field name="vehicle_count"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_tms_site" model="ir.actions.act_window">
+        <field name="name">Sites / dépôts</field>
+        <field name="res_model">tms.site</field>
+        <field name="view_mode">list</field>
+    </record>
+    <record id="action_tms_cost_center" model="ir.actions.act_window">
+        <field name="name">Centres de coût</field>
+        <field name="res_model">account.analytic.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('plan_id.name', '=', 'Centres de coût')]</field>
+        <field name="context">{'default_plan_id': %(tms_fleet.analytic_plan_cost_center)d}</field>
+    </record>
+</odoo>

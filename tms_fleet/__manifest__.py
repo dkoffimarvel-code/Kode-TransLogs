@@ -1,0 +1,23 @@
+{
+    'name': 'TMS - Gestion du parc et transport',
+    'version': '19.0.1.0.0',
+    'category': 'Fleet',
+    'summary': 'Flotte, tournées, carburant, conformité, sécurité conducteurs, centres de coût',
+    'description': "Cahier des charges TMS Flotte v3.3 - §5 Gestion du Parc Automobile et §7.1 facturation des tournées.",
+    'depends': ['fleet', 'hr', 'account', 'analytic', 'mail'],
+    'data': [
+        'security/tms_security.xml',
+        'security/ir.model.access.csv',
+        'data/tms_data.xml',
+        'data/tms_cron.xml',
+        'views/tms_site_views.xml',
+        'views/fleet_vehicle_views.xml',
+        'views/tms_tour_views.xml',
+        'views/tms_operations_views.xml',
+        'views/hr_employee_views.xml',
+        'views/tms_report_views.xml',
+        'views/tms_menus.xml',
+    ],
+    'application': True,
+    'license': 'LGPL-3',
+}

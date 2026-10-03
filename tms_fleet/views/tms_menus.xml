@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_tms_root" name="TMS Transport" sequence="10"
+              groups="tms_fleet.group_tms_driver"/>
+
+    <menuitem id="menu_tms_dashboard" name="Tableau de bord" parent="menu_tms_root" sequence="1"
+              action="action_tms_dashboard" groups="tms_fleet.group_tms_user"/>
+
+    <menuitem id="menu_tms_fleet" name="Flotte" parent="menu_tms_root" sequence="10" groups="tms_fleet.group_tms_user"/>
+    <menuitem id="menu_tms_vehicle" name="Véhicules" parent="menu_tms_fleet" sequence="1" action="action_tms_vehicle"/>
+    <menuitem id="menu_tms_gps" name="Positions GPS" parent="menu_tms_fleet" sequence="2" action="action_tms_gps"/>
+    <menuitem id="menu_tms_fuel" name="Carburant" parent="menu_tms_fleet" sequence="3" action="action_tms_fuel"/>
+    <menuitem id="menu_tms_plan" name="Maintenance préventive" parent="menu_tms_fleet" sequence="4" action="action_tms_plan"/>
+
+    <menuitem id="menu_tms_ops" name="Exploitation" parent="menu_tms_root" sequence="20"/>
+    <menuitem id="menu_tms_tour" name="Tournées" parent="menu_tms_ops" sequence="1" action="action_tms_tour"/>
+    <menuitem id="menu_tms_incident" name="Incidents" parent="menu_tms_ops" sequence="2" action="action_tms_incident"/>
+
+    <menuitem id="menu_tms_drivers" name="Conducteurs" parent="menu_tms_root" sequence="30" groups="tms_fleet.group_tms_user"/>
+    <menuitem id="menu_tms_driver" name="Fiches conducteurs" parent="menu_tms_drivers" sequence="1" action="action_tms_driver"/>
+    <menuitem id="menu_tms_driving_event" name="Évènements de conduite" parent="menu_tms_drivers" sequence="2" action="action_tms_driving_event"/>
+
+    <menuitem id="menu_tms_compliance" name="Conformité" parent="menu_tms_root" sequence="40" groups="tms_fleet.group_tms_user"/>
+    <menuitem id="menu_tms_document" name="Documents &amp; habilitations" parent="menu_tms_compliance" sequence="1" action="action_tms_document"/>
+
+    <menuitem id="menu_tms_reporting" name="Reporting" parent="menu_tms_root" sequence="50" groups="tms_fleet.group_tms_manager"/>
+    <menuitem id="menu_tms_report" name="Rapports programmés" parent="menu_tms_reporting" sequence="1" action="action_tms_report"/>
+
+    <menuitem id="menu_tms_config" name="Configuration" parent="menu_tms_root" sequence="90" groups="tms_fleet.group_tms_manager"/>
+    <menuitem id="menu_tms_site" name="Sites / dépôts" parent="menu_tms_config" sequence="1" action="action_tms_site"/>
+    <menuitem id="menu_tms_cost_center" name="Centres de coût" parent="menu_tms_config" sequence="2" action="action_tms_cost_center"/>
+    <menuitem id="menu_tms_geofence" name="Zones (géofencing)" parent="menu_tms_config" sequence="3" action="action_tms_geofence"/>
+</odoo>

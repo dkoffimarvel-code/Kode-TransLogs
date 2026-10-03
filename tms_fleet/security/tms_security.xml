@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_tms_driver" model="res.groups">
+        <field name="name">TMS / Conducteur</field>
+    </record>
+    <record id="group_tms_user" model="res.groups">
+        <field name="name">TMS / Exploitant</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('group_tms_driver'))]"/>
+    </record>
+    <record id="group_tms_manager" model="res.groups">
+        <field name="name">TMS / Responsable</field>
+        <field name="implied_ids" eval="[(4, ref('group_tms_user')), (4, ref('analytic.group_analytic_accounting'))]"/>
+        <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>
+    </record>
+
+    <!-- Un conducteur ne voit que ses propres tournées / incidents / documents -->
+    <record id="rule_tms_tour_driver" model="ir.rule">
+        <field name="name">Tournée : conducteur - ses tournées</field>
+        <field name="model_id" ref="model_tms_tour"/>
+        <field name="groups" eval="[(4, ref('group_tms_driver'))]"/>
+        <field name="domain_force">[('driver_id.user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_tms_tour_user" model="ir.rule">
+        <field name="name">Tournée : exploitant - tout</field>
+        <field name="model_id" ref="model_tms_tour"/>
+        <field name="groups" eval="[(4, ref('group_tms_user'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_tms_incident_driver" model="ir.rule">
+        <field name="name">Incident : conducteur - ses incidents</field>
+        <field name="model_id" ref="model_tms_incident"/>
+        <field name="groups" eval="[(4, ref('group_tms_driver'))]"/>
+        <field name="domain_force">[('driver_id.user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_tms_incident_user" model="ir.rule">
+        <field name="name">Incident : exploitant - tout</field>
+        <field name="model_id" ref="model_tms_incident"/>
+        <field name="groups" eval="[(4, ref('group_tms_user'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>

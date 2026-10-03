@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_employee_form_tms" model="ir.ui.view">
+        <field name="name">hr.employee.form.tms</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Conducteur" name="tms_driver">
+                    <group>
+                        <group>
+                            <field name="is_driver"/>
+                            <field name="license_number" invisible="not is_driver"/>
+                            <field name="license_categories" invisible="not is_driver"/>
+                            <field name="tms_site_id"/>
+                            <field name="tms_cost_center_id"/>
+                        </group>
+                        <group string="Évaluations" invisible="not is_driver">
+                            <field name="safety_score"/>
+                            <field name="eco_score"/>
+                            <field name="punctuality_rate"/>
+                            <field name="hard_braking_count"/>
+                            <field name="tour_month_count"/>
+                            <field name="incident_count"/>
+                        </group>
+                    </group>
+                    <field name="tms_document_ids" context="{'default_employee_id': id}">
+                        <list decoration-danger="state == 'expired'" decoration-warning="state == 'expiring'">
+                            <field name="doc_type"/><field name="reference"/><field name="date_expiry"/><field name="state"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="action_tms_driver" model="ir.actions.act_window">
+        <field name="name">Conducteurs</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('is_driver', '=', True)]</field>
+        <field name="context">{'default_is_driver': True}</field>
+    </record>
+</odoo>

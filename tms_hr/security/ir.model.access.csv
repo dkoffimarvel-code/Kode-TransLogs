@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tms_pay_element_hr,tms.pay.element.hr,model_tms_pay_element,hr.group_hr_user,1,1,1,1
+access_tms_pay_element_manager,tms.pay.element.manager,model_tms_pay_element,tms_fleet.group_tms_manager,1,1,1,1
+access_tms_payslip_hr,tms.payslip.hr,model_tms_payslip,hr.group_hr_user,1,1,1,1
+access_tms_payslip_manager,tms.payslip.manager,model_tms_payslip,tms_fleet.group_tms_manager,1,0,0,0

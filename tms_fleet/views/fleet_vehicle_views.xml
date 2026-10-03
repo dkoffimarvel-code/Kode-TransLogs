@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="fleet_vehicle_view_form_tms" model="ir.ui.view">
+        <field name="name">fleet.vehicle.form.tms</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_tms" type="object" class="oe_stat_button" icon="fa-road"
+                        context="{'tms_model': 'tms.tour'}">
+                    <field name="tour_ids" widget="statinfo" string="Tournées"/>
+                </button>
+                <button name="action_view_tms" type="object" class="oe_stat_button" icon="fa-tint"
+                        context="{'tms_model': 'tms.fuel.log'}">
+                    <field name="fuel_avg_consumption" widget="statinfo" string="L/100 km"/>
+                </button>
+                <button name="action_view_tms" type="object" class="oe_stat_button" icon="fa-wrench"
+                        context="{'tms_model': 'fleet.vehicle.log.services'}">
+                    <field name="open_repairs_count" widget="statinfo" string="Réparations en cours"/>
+                </button>
+                <button name="action_open_map" type="object" class="oe_stat_button" icon="fa-map-marker"
+                        invisible="not last_position_date">
+                    <div class="o_stat_info"><span class="o_stat_text">Localiser</span></div>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Exploitation" name="tms_exploitation">
+                    <group>
+                        <group string="Rattachement">
+                            <field name="tms_status" widget="statusbar" options="{'clickable': '1'}"/>
+                            <field name="tms_site_id"/>
+                            <field name="cost_center_id"/>
+                            <field name="tms_driver_id"/>
+                            <field name="load_capacity"/>
+                            <field name="commissioning_date"/>
+                        </group>
+                        <group string="Suivi GPS">
+                            <field name="gps_device_ref"/>
+                            <field name="gps_active"/>
+                            <field name="last_position_date"/>
+                            <field name="last_latitude"/>
+                            <field name="last_longitude"/>
+                            <field name="last_speed"/>
+                        </group>
+                    </group>
+                </page>
+                <page string="Carburant" name="tms_fuel">
+                    <group>
+                        <field name="fuel_avg_consumption"/>
+                        <field name="fuel_cost_total"/>
+                    </group>
+                    <field name="fuel_log_ids">
+                        <list>
+                            <field name="date"/><field name="odometer"/><field name="liters"/>
+                            <field name="total_cost"/><field name="consumption"/><field name="anomaly"/>
+                            <field name="cost_center_id"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Maintenance préventive" name="tms_plans">
+                    <field name="maintenance_plan_ids">
+                        <list editable="bottom" decoration-danger="state == 'overdue'" decoration-warning="state == 'soon'">
+                            <field name="name"/><field name="interval_km"/><field name="interval_days"/>
+                            <field name="last_date"/><field name="last_odometer"/>
+                            <field name="next_date"/><field name="next_odometer"/><field name="state"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Documents" name="tms_documents">
+                    <field name="tms_document_ids" context="{'default_vehicle_id': id}">
+                        <list decoration-danger="state == 'expired'" decoration-warning="state == 'expiring'">
+                            <field name="doc_type"/><field name="reference"/>
+                            <field name="date_expiry"/><field name="state"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Coûts" name="tms_costs">
+                    <group>
+                        <field name="fuel_cost_total"/>
+                        <field name="maintenance_cost_total"/>
+                        <field name="total_cost"/>
+                        <field name="cost_per_km"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="fleet_vehicle_view_list_tms" model="ir.ui.view">
+        <field name="name">fleet.vehicle.list.tms</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="tms_status" optional="show"/>
+                <field name="tms_site_id" optional="show"/>
+                <field name="cost_center_id" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="fleet_vehicle_view_search_tms" model="ir.ui.view">
+        <field name="name">fleet.vehicle.search.tms</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="tms_site_id"/>
+                <field name="cost_center_id"/>
+                <filter name="tms_available" string="Disponibles" domain="[('tms_status', '=', 'available')]"/>
+                <filter name="tms_maintenance" string="En maintenance" domain="[('tms_status', '=', 'maintenance')]"/>
+                <group>
+                    <filter name="group_status" string="Statut" context="{'group_by': 'tms_status'}"/>
+                    <filter name="group_site" string="Site" context="{'group_by': 'tms_site_id'}"/>
+                    <filter name="group_cc" string="Centre de coût" context="{'group_by': 'cost_center_id'}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="fleet_vehicle_view_kanban_tms" model="ir.ui.view">
+        <field name="name">fleet.vehicle.kanban.tms</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="tms_status" class="o_kanban_small_column">
+                <field name="tms_status"/>
+                <templates>
+                    <t t-name="card">
+                        <field name="license_plate" class="fw-bold fs-5"/>
+                        <field name="model_id"/>
+                        <div class="text-muted"><field name="tms_site_id"/> · <field name="cost_center_id"/></div>
+                        <div><field name="tms_driver_id"/></div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_tms_vehicle" model="ir.actions.act_window">
+        <field name="name">Véhicules</field>
+        <field name="res_model">fleet.vehicle</field>
+        <field name="view_mode">kanban,list,form,graph,pivot</field>
+        <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'kanban', 'view_id': ref('fleet_vehicle_view_kanban_tms')})]"/>
+    </record>
+
+    <record id="view_tms_vehicle_pivot" model="ir.ui.view">
+        <field name="name">fleet.vehicle.pivot.tms</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="arch" type="xml">
+            <pivot string="Tableau de bord flotte">
+                <field name="tms_status" type="row"/>
+                <field name="tms_site_id" type="col"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="view_tms_vehicle_graph" model="ir.ui.view">
+        <field name="name">fleet.vehicle.graph.tms</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="arch" type="xml">
+            <graph string="Répartition par statut" type="pie">
+                <field name="tms_status"/>
+            </graph>
+        </field>
+    </record>
+    <record id="action_tms_dashboard" model="ir.actions.act_window">
+        <field name="name">Tableau de bord flotte</field>
+        <field name="res_model">fleet.vehicle</field>
+        <field name="view_mode">graph,pivot</field>
+    </record>
+</odoo>

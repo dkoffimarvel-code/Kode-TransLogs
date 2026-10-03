@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Incidents -->
+    <record id="view_tms_incident_form" model="ir.ui.view">
+        <field name="name">tms.incident.form</field>
+        <field name="model">tms.incident</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_treat" string="Marquer traité" type="object" class="btn-primary" invisible="state == 'treated'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <h1><field name="name"/></h1>
+                    <group>
+                        <group>
+                            <field name="vehicle_id"/><field name="driver_id"/><field name="date"/>
+                            <field name="incident_type"/><field name="severity" widget="priority"/>
+                        </group>
+                        <group>
+                            <field name="cost_center_id"/><field name="repair_cost"/>
+                            <field name="attachment"/><field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Description…"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_tms_incident_list" model="ir.ui.view">
+        <field name="name">tms.incident.list</field>
+        <field name="model">tms.incident</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/><field name="date"/><field name="vehicle_id"/><field name="driver_id"/>
+                <field name="incident_type"/><field name="severity"/><field name="repair_cost"/>
+                <field name="cost_center_id"/><field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_tms_incident" model="ir.actions.act_window">
+        <field name="name">Incidents</field>
+        <field name="res_model">tms.incident</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+    </record>
+
+    <!-- Carburant -->
+    <record id="view_tms_fuel_form" model="ir.ui.view">
+        <field name="name">tms.fuel.log.form</field>
+        <field name="model">tms.fuel.log</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="vehicle_id"/><field name="driver_id"/><field name="date"/>
+                            <field name="odometer"/><field name="liters"/><field name="total_cost"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="cost_center_id"/><field name="station"/><field name="payment_mode"/>
+                            <field name="receipt"/><field name="consumption"/><field name="anomaly"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_tms_fuel_list" model="ir.ui.view">
+        <field name="name">tms.fuel.log.list</field>
+        <field name="model">tms.fuel.log</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="anomaly">
+                <field name="date"/><field name="vehicle_id"/><field name="driver_id"/><field name="odometer"/>
+                <field name="liters" sum="Total"/><field name="total_cost" sum="Total"/>
+                <field name="consumption"/><field name="anomaly"/><field name="cost_center_id"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_tms_fuel" model="ir.actions.act_window">
+        <field name="name">Carburant</field>
+        <field name="res_model">tms.fuel.log</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+    </record>
+
+    <!-- Documents -->
+    <record id="view_tms_document_form" model="ir.ui.view">
+        <field name="name">tms.document.form</field>
+        <field name="model">tms.document</field>
+        <field name="arch" type="xml">
+            <form>
+                <header><field name="state" widget="statusbar"/></header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="doc_type"/><field name="reference"/>
+                            <field name="vehicle_id"/><field name="employee_id"/>
+                        </group>
+                        <group>
+                            <field name="date_obtained"/><field name="date_expiry"/>
+                            <field name="reminder_days"/>
+                            <field name="attachment" filename="attachment_name"/>
+                            <field name="attachment_name" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_tms_document_list" model="ir.ui.view">
+        <field name="name">tms.document.list</field>
+        <field name="model">tms.document</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state == 'expired'" decoration-warning="state == 'expiring'">
+                <field name="name"/><field name="doc_type"/><field name="vehicle_id"/><field name="employee_id"/>
+                <field name="date_expiry"/><field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_tms_document_search" model="ir.ui.view">
+        <field name="name">tms.document.search</field>
+        <field name="model">tms.document</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/><field name="vehicle_id"/><field name="employee_id"/>
+                <filter name="alerts" string="À renouveler / expirés" domain="[('state', '!=', 'valid')]"/>
+                <group>
+                    <filter name="g_type" string="Type" context="{'group_by': 'doc_type'}"/>
+                    <filter name="g_state" string="Statut" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_tms_document" model="ir.actions.act_window">
+        <field name="name">Documents &amp; habilitations</field>
+        <field name="res_model">tms.document</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_alerts': 1}</field>
+    </record>
+
+    <!-- Évènements de conduite -->
+    <record id="view_tms_driving_event_list" model="ir.ui.view">
+        <field name="name">tms.driving.event.list</field>
+        <field name="model">tms.driving.event</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="date"/><field name="driver_id"/><field name="vehicle_id"/>
+                <field name="event_type"/><field name="value"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_tms_driving_event" model="ir.actions.act_window">
+        <field name="name">Évènements de conduite</field>
+        <field name="res_model">tms.driving.event</field>
+        <field name="view_mode">list,pivot,graph</field>
+    </record>
+
+    <!-- GPS / géofencing -->
+    <record id="view_tms_gps_list" model="ir.ui.view">
+        <field name="name">tms.gps.position.list</field>
+        <field name="model">tms.gps.position</field>
+        <field name="arch" type="xml">
+            <list><field name="date"/><field name="vehicle_id"/><field name="latitude"/><field name="longitude"/><field name="speed"/></list>
+        </field>
+    </record>
+    <record id="action_tms_gps" model="ir.actions.act_window">
+        <field name="name">Historique des positions</field>
+        <field name="res_model">tms.gps.position</field>
+        <field name="view_mode">list</field>
+    </record>
+    <record id="view_tms_geofence_list" model="ir.ui.view">
+        <field name="name">tms.geofence.list</field>
+        <field name="model">tms.geofence</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="name"/><field name="latitude"/><field name="longitude"/>
+                <field name="radius_km"/><field name="vehicle_ids" widget="many2many_tags"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_tms_geofence" model="ir.actions.act_window">
+        <field name="name">Zones (géofencing)</field>
+        <field name="res_model">tms.geofence</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- Plans de maintenance -->
+    <record id="view_tms_plan_list" model="ir.ui.view">
+        <field name="name">tms.maintenance.plan.list</field>
+        <field name="model">tms.maintenance.plan</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state == 'overdue'" decoration-warning="state == 'soon'">
+                <field name="vehicle_id"/><field name="name"/><field name="next_date"/>
+                <field name="next_odometer"/><field name="state"/>
+                <button name="action_done" type="object" string="Réalisée" icon="fa-check"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_tms_plan_form" model="ir.ui.view">
+        <field name="name">tms.maintenance.plan.form</field>
+        <field name="model">tms.maintenance.plan</field>
+        <field name="arch" type="xml">
+            <form>
+                <header><button name="action_done" string="Intervention réalisée" type="object"/><field name="state" widget="statusbar"/></header>
+                <sheet>
+                    <group>
+                        <group><field name="name"/><field name="vehicle_id"/></group>
+                        <group><field name="interval_km"/><field name="interval_days"/><field name="alert_km"/><field name="alert_days"/></group>
+                        <group><field name="last_date"/><field name="last_odometer"/></group>
+                        <group><field name="next_date"/><field name="next_odometer"/></group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_tms_plan" model="ir.actions.act_window">
+        <field name="name">Plans de maintenance</field>
+        <field name="res_model">tms.maintenance.plan</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Extension des interventions de maintenance Odoo -->
+    <record id="fleet_service_form_tms" model="ir.ui.view">
+        <field name="name">fleet.vehicle.log.services.form.tms</field>
+        <field name="model">fleet.vehicle.log.services</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Centre de coût et pièces">
+                    <field name="cost_center_id"/>
+                    <field name="garage"/>
+                    <field name="warranty_covered"/>
+                    <field name="parts_replaced"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

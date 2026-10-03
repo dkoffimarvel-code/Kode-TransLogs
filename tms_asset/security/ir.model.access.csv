@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tms_asset_category_user,tms.asset.category.user,model_tms_asset_category,tms_fleet.group_tms_user,1,0,0,0
+access_tms_asset_category_manager,tms.asset.category.manager,model_tms_asset_category,tms_fleet.group_tms_manager,1,1,1,1
+access_tms_asset_user,tms.asset.user,model_tms_asset,tms_fleet.group_tms_user,1,0,0,0
+access_tms_asset_manager,tms.asset.manager,model_tms_asset,tms_fleet.group_tms_manager,1,1,1,1
+access_tms_asset_line_user,tms.asset.line.user,model_tms_asset_line,tms_fleet.group_tms_user,1,0,0,0
+access_tms_asset_line_manager,tms.asset.line.manager,model_tms_asset_line,tms_fleet.group_tms_manager,1,1,1,1

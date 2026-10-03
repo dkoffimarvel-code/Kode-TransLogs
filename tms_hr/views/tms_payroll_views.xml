@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_tms_pay_element_list" model="ir.ui.view">
+        <field name="name">tms.pay.element.list</field>
+        <field name="model">tms.pay.element</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="employee_id"/><field name="period"/><field name="element_type"/>
+                <field name="amount" sum="Total"/><field name="cost_center_id"/><field name="recurring"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_tms_pay_element" model="ir.actions.act_window">
+        <field name="name">Éléments de paie</field>
+        <field name="res_model">tms.pay.element</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <record id="view_tms_payslip_form" model="ir.ui.view">
+        <field name="name">tms.payslip.form</field>
+        <field name="model">tms.payslip</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_refresh" string="Recalculer" type="object" invisible="state != 'draft'"/>
+                    <button name="action_validate" string="Valider" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_paid" string="Marquer payé" type="object" invisible="state != 'validated'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group><field name="employee_id"/><field name="period"/><field name="cost_center_id"/></group>
+                        <group>
+                            <field name="base_salary"/><field name="variable_amount"/><field name="expense_amount"/>
+                            <field name="gross"/><field name="social_charges"/><field name="net"/><field name="employer_cost"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_tms_payslip_list" model="ir.ui.view">
+        <field name="name">tms.payslip.list</field>
+        <field name="model">tms.payslip</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="employee_id"/><field name="period"/><field name="gross" sum="Masse salariale brute"/>
+                <field name="social_charges" sum="Charges"/><field name="net" sum="Net"/>
+                <field name="employer_cost" sum="Coût employeur"/><field name="cost_center_id"/><field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_tms_payslip" model="ir.actions.act_window">
+        <field name="name">Bulletins de paie</field>
+        <field name="res_model">tms.payslip</field>
+        <field name="view_mode">list,form,pivot</field>
+    </record>
+    <record id="action_tms_payslip_generate" model="ir.actions.server">
+        <field name="name">Générer les bulletins du mois</field>
+        <field name="model_id" ref="model_tms_payslip"/>
+        <field name="state">code</field>
+        <field name="code">model.action_generate_month()
+action = env['ir.actions.act_window']._for_xml_id('tms_hr.action_tms_payslip')</field>
+    </record>
+
+    <menuitem id="menu_tms_hr_root" name="RH &amp; Paie" parent="tms_fleet.menu_tms_root" sequence="85" groups="hr.group_hr_user"/>
+    <menuitem id="menu_tms_hr_employee" name="Dossiers du personnel" parent="menu_tms_hr_root" sequence="1" action="hr.open_view_employee_list_my"/>
+    <menuitem id="menu_tms_pay_element" name="Éléments de paie" parent="menu_tms_hr_root" sequence="3" action="action_tms_pay_element"/>
+    <menuitem id="menu_tms_payslip" name="Bulletins de paie" parent="menu_tms_hr_root" sequence="4" action="action_tms_payslip"/>
+    <menuitem id="menu_tms_payslip_generate" name="Générer les bulletins du mois" parent="menu_tms_hr_root" sequence="5" action="action_tms_payslip_generate"/>
+</odoo>

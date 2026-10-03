@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tms_budget_user,tms.budget.user,model_tms_budget,tms_fleet.group_tms_user,1,0,0,0
+access_tms_budget_manager,tms.budget.manager,model_tms_budget,tms_fleet.group_tms_manager,1,1,1,1

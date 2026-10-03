@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tms_pr_user,tms.purchase.request.user,model_tms_purchase_request,tms_fleet.group_tms_driver,1,1,1,0
+access_tms_pr_manager,tms.purchase.request.manager,model_tms_purchase_request,tms_fleet.group_tms_manager,1,1,1,1
+access_tms_prl_user,tms.purchase.request.line.user,model_tms_purchase_request_line,tms_fleet.group_tms_driver,1,1,1,1
+access_tms_prl_manager,tms.purchase.request.line.manager,model_tms_purchase_request_line,tms_fleet.group_tms_manager,1,1,1,1

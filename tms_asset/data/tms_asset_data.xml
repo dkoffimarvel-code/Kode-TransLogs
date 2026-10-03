@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="asset_category_vehicle" model="tms.asset.category">
+        <field name="name">Véhicules de la flotte</field>
+        <field name="code">vehicle</field>
+        <field name="duration_months">60</field>
+    </record>
+    <record id="asset_category_building" model="tms.asset.category">
+        <field name="name">Bâtiments</field>
+        <field name="code">building</field>
+        <field name="duration_months">240</field>
+    </record>
+    <record id="asset_category_it" model="tms.asset.category">
+        <field name="name">Matériel informatique</field>
+        <field name="code">it</field>
+        <field name="duration_months">36</field>
+    </record>
+    <record id="asset_category_furniture" model="tms.asset.category">
+        <field name="name">Mobilier</field>
+        <field name="code">furniture</field>
+        <field name="duration_months">120</field>
+    </record>
+    <record id="cron_tms_asset_depreciation" model="ir.cron">
+        <field name="name">TMS : comptabilisation des dotations</field>
+        <field name="model_id" ref="model_tms_asset"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_post_depreciation()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+    </record>
+</odoo>

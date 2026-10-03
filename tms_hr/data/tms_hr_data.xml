@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="cron_tms_contract_alerts" model="ir.cron">
+        <field name="name">TMS : alertes d'échéance de contrat</field>
+        <field name="model_id" ref="hr.model_hr_employee"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_contract_alerts()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+    </record>
+    <record id="param_employee_rate" model="ir.config_parameter">
+        <field name="key">tms_hr.employee_charge_rate</field>
+        <field name="value">22.0</field>
+    </record>
+    <record id="param_employer_rate" model="ir.config_parameter">
+        <field name="key">tms_hr.employer_charge_rate</field>
+        <field name="value">42.0</field>
+    </record>
+</odoo>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_tms_pr_form" model="ir.ui.view">
+        <field name="name">tms.purchase.request.form</field>
+        <field name="model">tms.purchase.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" string="Soumettre" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Valider" type="object" class="btn-primary"
+                            invisible="state != 'to_approve'" groups="tms_fleet.group_tms_manager"/>
+                    <button name="action_refuse" string="Refuser" type="object" invisible="state != 'to_approve'"
+                            groups="tms_fleet.group_tms_manager"/>
+                    <button name="action_create_order" string="Créer la commande" type="object" class="btn-primary"
+                            invisible="state != 'approved'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,approved,ordered"/>
+                </header>
+                <sheet>
+                    <h1><field name="name"/></h1>
+                    <group>
+                        <group><field name="requester_id"/><field name="date"/><field name="site_id"/></group>
+                        <group><field name="cost_center_id"/><field name="justification"/></group>
+                    </group>
+                    <field name="line_ids">
+                        <list editable="bottom">
+                            <field name="product_id"/><field name="name"/><field name="quantity"/><field name="uom_id"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_tms_pr_list" model="ir.ui.view">
+        <field name="name">tms.purchase.request.list</field>
+        <field name="model">tms.purchase.request</field>
+        <field name="arch" type="xml">
+            <list><field name="name"/><field name="date"/><field name="requester_id"/>
+                <field name="cost_center_id"/><field name="state"/></list>
+        </field>
+    </record>
+    <record id="action_tms_pr" model="ir.actions.act_window">
+        <field name="name">Demandes d'achat</field>
+        <field name="res_model">tms.purchase.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="purchase_order_form_tms" model="ir.ui.view">
+        <field name="name">purchase.order.form.tms</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_ref']" position="after">
+                <field name="cost_center_id"/>
+                <field name="vehicle_id"/>
+                <field name="tms_request_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="stock_picking_form_tms" model="ir.ui.view">
+        <field name="name">stock.picking.form.tms</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="cost_center_id"/>
+                <field name="vehicle_id"/>
+                <field name="maintenance_log_id"/>
+                <field name="tms_move_kind"/>
+                <field name="received_by_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="res_partner_form_tms_supplier" model="ir.ui.view">
+        <field name="name">res.partner.form.tms.supplier</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="tms_supplier_type"/>
+                <field name="tms_supplier_rating" widget="priority"/>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem id="menu_tms_purchase" name="Achats" parent="tms_fleet.menu_tms_root" sequence="60" groups="tms_fleet.group_tms_driver"/>
+    <menuitem id="menu_tms_pr" name="Demandes d'achat" parent="menu_tms_purchase" sequence="1" action="action_tms_pr"/>
+</odoo>

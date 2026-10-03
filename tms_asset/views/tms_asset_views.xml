@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_tms_asset_form" model="ir.ui.view">
+        <field name="name">tms.asset.form</field>
+        <field name="model">tms.asset</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" string="Valider" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_compute_plan" string="Calculer le plan" type="object" invisible="state != 'draft'"/>
+                    <button name="action_sell" string="Céder" type="object" invisible="state != 'running'"/>
+                    <button name="action_scrap" string="Mettre au rebut" type="object" invisible="state != 'running'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <h1><field name="name"/></h1>
+                    <group>
+                        <group>
+                            <field name="category_id"/><field name="vehicle_id"/><field name="cost_center_id"/>
+                            <field name="acquisition_date"/><field name="acquisition_value"/><field name="salvage_value"/>
+                        </group>
+                        <group>
+                            <field name="duration_months"/><field name="method"/>
+                            <field name="degressive_factor" invisible="method != 'degressive'"/>
+                            <field name="accumulated"/><field name="book_value"/><field name="fully_depreciated"/>
+                            <field name="disposal_date" invisible="state not in ('sold', 'scrapped')"/>
+                            <field name="disposal_value" invisible="state not in ('sold', 'scrapped')"/>
+                            <field name="gain_loss" invisible="state not in ('sold', 'scrapped')"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Plan d'amortissement">
+                            <field name="line_ids">
+                                <list decoration-success="state == 'posted'">
+                                    <field name="date"/><field name="amount" sum="Total"/><field name="state"/><field name="move_id"/>
+                                    <button name="action_post" type="object" string="Comptabiliser" icon="fa-check" invisible="state == 'posted'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_tms_asset_list" model="ir.ui.view">
+        <field name="name">tms.asset.list</field>
+        <field name="model">tms.asset</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/><field name="category_id"/><field name="acquisition_date"/>
+                <field name="acquisition_value" sum="Valeur brute"/><field name="accumulated" sum="Amortissements"/>
+                <field name="book_value" sum="VNC"/><field name="cost_center_id"/><field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_tms_asset_search" model="ir.ui.view">
+        <field name="name">tms.asset.search</field>
+        <field name="model">tms.asset</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/><field name="category_id"/><field name="cost_center_id"/>
+                <filter name="running" string="En cours" domain="[('state', '=', 'running')]"/>
+                <filter name="full" string="Totalement amortis" domain="[('fully_depreciated', '=', True)]"/>
+                <group>
+                    <filter name="g_cat" string="Catégorie" context="{'group_by': 'category_id'}"/>
+                    <filter name="g_cc" string="Centre de coût" context="{'group_by': 'cost_center_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_tms_asset" model="ir.actions.act_window">
+        <field name="name">Immobilisations</field>
+        <field name="res_model">tms.asset</field>
+        <field name="view_mode">list,form,pivot</field>
+    </record>
+    <record id="view_tms_asset_category_list" model="ir.ui.view">
+        <field name="name">tms.asset.category.list</field>
+        <field name="model">tms.asset.category</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="name"/><field name="code"/><field name="duration_months"/><field name="method"/>
+                <field name="journal_id"/><field name="asset_account_id"/>
+                <field name="depreciation_account_id"/><field name="expense_account_id"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_tms_asset_category" model="ir.actions.act_window">
+        <field name="name">Catégories d'immobilisations</field>
+        <field name="res_model">tms.asset.category</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <record id="fleet_vehicle_form_asset" model="ir.ui.view">
+        <field name="name">fleet.vehicle.form.asset</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_asset" type="object" class="oe_stat_button" icon="fa-building" invisible="not asset_id">
+                    <div class="o_stat_info"><span class="o_stat_text">Immobilisation</span></div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem id="menu_tms_asset_root" name="Immobilisations" parent="tms_fleet.menu_tms_root" sequence="70" groups="tms_fleet.group_tms_user"/>
+    <menuitem id="menu_tms_asset" name="Registre" parent="menu_tms_asset_root" sequence="1" action="action_tms_asset"/>
+    <menuitem id="menu_tms_asset_category" name="Catégories" parent="menu_tms_asset_root" sequence="2"
+              action="action_tms_asset_category" groups="tms_fleet.group_tms_manager"/>
+</odoo>
